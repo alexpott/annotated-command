@@ -9,6 +9,8 @@ use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Consolidation\AnnotatedCommand\State\State;
 use Consolidation\AnnotatedCommand\State\StateHelper;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Completion\CompletionInput;
+use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -309,6 +311,15 @@ class AnnotatedCommand extends Command implements HelpDocumentAlter
                     $this->addUsageOrExample($usage, $description);
                 }
             }
+        }
+    }
+
+    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        $instance = $this->commandCallback[0];
+        $method = $this->commandCallback[1] . 'Complete';
+        if (method_exists($instance, $method)) {
+            $instance->$method($input, $suggestions);
         }
     }
 
